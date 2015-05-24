@@ -10,7 +10,7 @@ module ObfuscateId
 
   def self.hide(str, spin = nil)
     # ScatterSwap.hash(id, spin)
-    Base64.encode64(str).gsub(/[\s=]+/, "").tr('+/','-_')
+    Base64.encode64(str.to_s).gsub(/[\s=]+/, "").tr('+/','-_')
   end
 
   def self.show(str, spin = nil)
