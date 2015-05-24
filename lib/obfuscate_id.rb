@@ -8,12 +8,15 @@ module ObfuscateId
     self.obfuscate_id_spin = (options[:spin] || obfuscate_id_default_spin)
   end
 
-  def self.hide(id, spin)
-    ScatterSwap.hash(id, spin)
+  def self.hide(str, spin = nil)
+    # ScatterSwap.hash(id, spin)
+    Base64.encode64(str).gsub(/[\s=]+/, "").tr('+/','-_')
   end
 
-  def self.show(id, spin)
-    ScatterSwap.reverse_hash(id, spin)
+  def self.show(str, spin = nil)
+    # ScatterSwap.reverse_hash(id, spin)
+    str += '=' * (4 - str.length.modulo(4))
+    Base64.decode64(str.tr('-_','+/'))
   end
 
   module ClassMethods
