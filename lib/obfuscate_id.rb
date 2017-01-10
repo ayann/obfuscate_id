@@ -86,3 +86,24 @@ module ObfuscateId
 end
 
 ActiveRecord::Base.extend ObfuscateId
+
+
+module ActiveRecord
+  module FinderMethods
+    
+    old_find = instance_method(:find)
+
+    define_method :find do |*args|
+      scope = args.slice!(0)
+      options = args.slice!(0) || {}
+      if has_obfuscated_id? && !options[:no_obfuscated_id]
+        if scope.is_a?(Array)
+          scope.map! {|a| deobfuscate_id(a).to_i}
+        else
+          scope = deobfuscate_id(scope)
+        end
+      end
+      old_find.bind(self).(scope)
+    end
+  end
+end
