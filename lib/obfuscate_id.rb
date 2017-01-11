@@ -1,20 +1,18 @@
 module ObfuscateId
-  def obfuscate_id(options = {})
-    require 'scatter_swap'
+  def has_obfuscated_id?
+    false
+  end
 
+  def obfuscate_id(options = {})
     extend ClassMethods
     include InstanceMethods
-    cattr_accessor :obfuscate_id_spin
-    self.obfuscate_id_spin = (options[:spin] || obfuscate_id_default_spin)
   end
 
   def self.hide(str, spin = nil)
-    # ScatterSwap.hash(id, spin)
     Base64.encode64(str.to_s).gsub(/[\s=]+/, "").tr('+/','-_')
   end
 
-  def self.show(str, spin = nil)
-    # ScatterSwap.reverse_hash(id, spin)
+  def self.show(str)
     str += '=' * (4 - str.length.modulo(4))
     Base64.decode64(str.tr('-_','+/'))
   end
@@ -38,7 +36,7 @@ module ObfuscateId
     end
 
     def deobfuscate_id(obfuscated_id)
-      ObfuscateId.show(obfuscated_id, self.obfuscate_id_spin)
+      ObfuscateId.show(obfuscated_id)
     end
 
     # Generate a default spin from the Model name
