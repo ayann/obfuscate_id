@@ -13,8 +13,9 @@ module ObfuscateId
   end
 
   def self.show(str)
-    str += '=' * (4 - str.to_s.length.modulo(4))
-    Base64.decode64(str.tr('-_','+/'))
+    Base64.decode64(
+      "#{str}#{('=' * (4 - str.to_s.length.modulo(4)))}".tr('-_','+/')
+    )
   end
 
   module ClassMethods
