@@ -19,24 +19,12 @@ module ObfuscateId
   end
 
   module ClassMethods
-    def find(*args)
-      scope = args.slice!(0)
-      options = args.slice!(0) || {}
-      if has_obfuscated_id? && !options[:no_obfuscated_id]
-        if scope.is_a?(Array)
-          scope.map! {|a| deobfuscate_id(a).to_i}
-        else
-          scope = deobfuscate_id(scope)
-        end
-      end
-      super(scope)
-    end
-
     def has_obfuscated_id?
       true
     end
 
     def deobfuscate_id(obfuscated_id)
+      return obfuscated_id unless obfuscated_id.is_a? String
       ObfuscateId.show obfuscated_id
     end
   end
