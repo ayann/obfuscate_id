@@ -13,7 +13,7 @@ module ObfuscateId
   end
 
   def self.show(str)
-    str += '=' * (4 - str.length.modulo(4))
+    str += '=' * (4 - str.to_s.length.modulo(4))
     Base64.decode64(str.tr('-_','+/'))
   end
 
