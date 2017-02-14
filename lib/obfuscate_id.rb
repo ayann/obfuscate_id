@@ -6,6 +6,9 @@ module ObfuscateId
   def obfuscate_id(options = {})
     extend ClassMethods
     include InstanceMethods
+    self.obfuscate_cache = options[:cache]
+    after_create :save_obfuscated_id if options[:cache]
+
   end
 
   def self.hide(str)
@@ -19,6 +22,8 @@ module ObfuscateId
   end
 
   module ClassMethods
+    attr_accessor :obfuscate_cache
+
     def has_obfuscated_id?
       true
     end
@@ -32,6 +37,10 @@ module ObfuscateId
   module InstanceMethods
     def to_param
       ObfuscateId.hide self.id
+    end
+
+    def save_obfuscated_id
+      self[self.class.obfuscate_cache] = ObfuscateId.hide(self.id)
     end
 
     # Override ActiveRecord::Persistence#reload
